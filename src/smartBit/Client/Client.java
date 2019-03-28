@@ -113,6 +113,7 @@ public class Client
 
     public String getText()
     {
+        
         return text;
     }
 
