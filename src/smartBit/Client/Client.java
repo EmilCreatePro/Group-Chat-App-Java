@@ -50,26 +50,25 @@ public class Client
             System.out.println(i);
         }
 
-        // string to read message from input
-        String line = "";
-
-        // keep reading until "Over" is input
-        while (!line.equals("Over"))
+        while (!getText().equals("Over"))
         {
             try
             {
-                //line = input.readLine();
-                //text = receiveText();
-                if(textWasSent)
-                {
-                    line = text;
-                    out.writeUTF(line);
-                    System.out.println("line=" + line + " text=" + text);
-                    text = "";
-                    textWasSent = false;
-                }
-                //if(line != "") out.writeUTF(line);
 
+                try{
+                    Thread.sleep(500);
+                }catch (InterruptedException ie){
+                    System.out.println("Could not put it to sleep!");
+                }
+
+                if(!getText().equals(""))
+                {
+                    //line = text;
+                    text = getText();
+                    out.writeUTF(text);
+                    System.out.println("text=" + text);
+                    text = "";
+                }
             }
             catch(IOException e)
             {
@@ -107,20 +106,16 @@ public class Client
     public void receiveText(String text)
     {
         System.out.println(text);
-        textWasSent = true;
         this.text = text;
     }
 
     public String getText()
     {
-        
+        String text = this.text;
+        if(text.equals("fuck"))
+            System.out.println(text);
+
         return text;
-    }
-
-
-    public boolean textWasReceived()
-    {
-        return textWasSent;
     }
 
 
