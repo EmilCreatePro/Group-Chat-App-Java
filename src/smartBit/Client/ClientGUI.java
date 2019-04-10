@@ -45,7 +45,12 @@ public class ClientGUI extends JFrame{
 
     private void displayMessages(String msg)
     {
-        dialogueBox.setText(dialogueBox.getText() + "\n" + msg);
+        dialogueBox.setText(dialogueBox.getText() + "Me: " + msg + "\n");
+    }
+
+    public void appendDialogueText(String msg)
+    {
+        dialogueBox.setText(dialogueBox.getText() + msg + "\n");
     }
 
 
