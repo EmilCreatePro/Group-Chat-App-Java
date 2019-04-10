@@ -12,12 +12,10 @@ public class Client
 {
     // initialize socket and input output streams
     private Socket socket            = null;
-    //private BufferedReader  input   = null;
     private DataInputStream input = null;
     private DataOutputStream out     = null;
     private ClientGUI clientGUI;
     private String text = "";
-    private boolean textWasSent = false;
     private String name;
 
     // constructor to put ip address and port
@@ -61,76 +59,81 @@ public class Client
             System.out.println("Could not put it to sleep!");
         }
 
-        //create 2 threads -> one to read messages, and one to send messages
-        while (!getText().equals("Over"))
+        // sendMessage thread
+        Thread sendMessage = new Thread(new Runnable()
         {
-            try
-            {
-                try{
-                    Thread.sleep(500);
-                }catch (InterruptedException ie){
-                    System.out.println("Could not put it to sleep!");
-                }
+            @Override
+            public void run() {
+                while (true) {
 
-                if(!getText().equals(""))
-                {
-                    //line = text;
-                    text = getText();
-                    out.writeUTF(text);
-                    System.out.println("text=" + text);
-                    text = "";
-                }
-
-                Thread readMessage = new Thread(new Runnable()
-                {
-                    @Override
-                    public void run() {
-
-                        while (true) {
-                            try {
-                                try{
-                                    Thread.sleep(500);
-
-                                    // read the message sent to this client
-                                    String msg = input.readUTF();
-
-                                    System.out.println("Message Received: " + msg);
-
-                                    clientGUI.appendDialogueText(msg);
-
-                                }catch (InterruptedException ie){
-                                    System.out.println("Could not put it to sleep!");
+                    // read the message to deliver.
+                    try {
+                        try{
+                            Thread.sleep(500);
+                          }catch (InterruptedException ie){
+                                   System.out.println("Could not put it to sleep!");
                                 }
-
-
-                            } catch (IOException e) {
-                                System.out.println("Problem with creating thread for reading!");
-                                e.printStackTrace();
-                            }
+                        // write on the output stream
+                        text = getText();
+                        if(!getText().equals(""))
+                        {
+                            System.out.println("I said:" + text);
+                            out.writeUTF(text);
+                            text = "";
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
-
-                readMessage.start();
-
+                }
             }
-            catch(IOException e)
-            {
-                System.out.println(e);
+        });
+
+        // readMessage thread
+        Thread readMessage = new Thread(new Runnable()
+        {
+            @Override
+            public void run() {
+
+                while (true) {
+                    try {
+                        try{
+                            Thread.sleep(500);
+                        }catch (InterruptedException ie){
+                            System.out.println("Could not put it to sleep!");
+                        }
+                        // read the message sent to this client
+                        String msg = input.readUTF();
+                        clientGUI.appendDialogueText(msg);
+                        System.out.println("Message received: " + msg);
+                    } catch (IOException e) {
+
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
+        });
+
+        sendMessage.start();
+        readMessage.start();
+
+//            }
+//            catch(IOException e)
+//            {
+//                System.out.println(e);
+//            }
+//        }
 
         // close the connection
-        try
-        {
-            input.close();
-            out.close();
-            socket.close();
-        }
-        catch(IOException i)
-        {
-            System.out.println(i);
-        }
+//        try
+//        {
+//            input.close();
+//            out.close();
+//            socket.close();
+//        }
+//        catch(IOException i)
+//        {
+//            System.out.println(i);
+//        }
     }
 
     private void createGUI(Client client) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException
@@ -149,7 +152,7 @@ public class Client
 
     public void receiveText(String text)
     {
-        System.out.println(text);
+        //System.out.println(text);
         this.text = text;
     }
 

@@ -36,7 +36,7 @@ public class HandleClient implements Runnable
             try{
 
                 msgRecv = dis.readUTF();
-                System.out.println(msgRecv);
+                System.out.println("Message from client:" + msgRecv);
 
                 if(msgRecv.equals("logout"))
                 {
@@ -51,7 +51,7 @@ public class HandleClient implements Runnable
                     if(client.hasConnected == true) //to add condition to check if the name of the client corresponds with the one desired
                     {
                         System.out.println(this.clientName + ": " + msgRecv);
-                        client.dos.writeUTF(this.clientName + " " + msgRecv);
+                        client.dos.writeUTF(this.clientName + ": " + msgRecv);
                     }
                 }
 
