@@ -36,7 +36,7 @@ public class Server
             outSocket = new DataOutputStream(socket.getOutputStream());
             //get the input and output streams
 
-            HandleClient newClient = new HandleClient(socket, "Client" + nrClients, inSocket, outSocket);
+            HandleClient newClient = new HandleClient(socket, nrClients, inSocket, outSocket);
 
             Thread handleClientThread = new Thread(newClient);//create a new thread for this client
 

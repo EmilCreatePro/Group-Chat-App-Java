@@ -8,19 +8,35 @@ import java.io.*;
 
 
 //ctrl + shift + F10 to run properly
-public class Client
+public class Client implements IClient
 {
     // initialize socket and input output streams
     private Socket socket            = null;
     private DataInputStream input = null;
     private DataOutputStream out     = null;
     private ClientGUI clientGUI;
+    private static GiveNamePort inputGUI;
     private String text = "";
-    private String name;
+    private String clientName;
+    private String ip;
+    private int port;
 
-    // constructor to put ip address and port
-    public Client(String address, int port)
+    public Client()
     {
+        try {
+            createInputGUI(this);
+        }catch (Exception e)
+        {
+            System.out.println("Could not create input GUI!");
+        }
+
+    }
+    // constructor to put ip address and port
+    public Client(String clientName, String address, int port)
+    {
+
+        this.clientName = clientName;
+
         try {
             createGUI(this);
 
@@ -54,7 +70,7 @@ public class Client
 
         try{
             Thread.sleep(500);
-            clientGUI.appendDialogueText("FMMM AM ZIS!!!");
+            //clientGUI.appendDialogueText("FMMM AM ZIS!!!");
         }catch (InterruptedException ie){
             System.out.println("Could not put it to sleep!");
         }
@@ -78,7 +94,7 @@ public class Client
                         if(!getText().equals(""))
                         {
                             System.out.println("I said:" + text);
-                            out.writeUTF(text);
+                            out.writeUTF(clientName +":"+ text);
                             text = "";
                         }
                     } catch (IOException e) {
@@ -136,9 +152,9 @@ public class Client
 //        }
     }
 
-    private void createGUI(Client client) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException
+    private void createGUI(IClient client) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException
     {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -156,7 +172,7 @@ public class Client
         this.text = text;
     }
 
-    public String getText()
+    private String getText()
     {
         String text = this.text;
         if(text.equals("fuck"))
@@ -165,13 +181,49 @@ public class Client
         return text;
     }
 
-
-    public static void main(String args[])
+    public String getClientName()
     {
+        return this.clientName;
+    }
 
+    private void createInputGUI(IClient client) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException
+    {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                inputGUI = new GiveNamePort(client);
+                inputGUI.setVisible(true);
+            }
+        });
+    }
+
+    public void connectButtonPressed(IClient client)
+    {
+        getInputInfo();
+        inputGUI.setVisible(false);
         try {
-            Client client = new Client("127.0.0.1", 1234);
+            client = new Client(clientName, ip, port);
+        }catch (Exception e)
+        {
+            System.out.println(e);
+        }
 
+    }
+
+
+    private void getInputInfo()
+    {
+        clientName = inputGUI.giveClientName();
+        ip = inputGUI.giveIp();
+        port = inputGUI.givePort();
+    }
+
+    public static void main(String[] args)
+    {
+        try {
+            IClient client = new Client();
         }catch (Exception e)
         {
             System.out.println(e);

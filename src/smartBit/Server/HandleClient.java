@@ -8,17 +8,17 @@ import java.util.*;
 public class HandleClient implements Runnable
 {
     Scanner scn = new Scanner(System.in);
-    private String clientName;
+    private Integer clientID;
     private final DataInputStream dis;
     private final DataOutputStream dos;
     private Socket socket;
     private boolean hasConnected;
     private boolean runClient = true;
 
-    public HandleClient(Socket socket, String clientName, DataInputStream in, DataOutputStream out)
+    public HandleClient(Socket socket, Integer clientID, DataInputStream in, DataOutputStream out)
     {
         this.socket = socket;
-        this.clientName = clientName;
+        this.clientID = clientID;
         dis = in;
         dos = out;
         hasConnected = true;
@@ -30,13 +30,15 @@ public class HandleClient implements Runnable
     public void run()
     {
         String msgRecv;
-
         while(runClient)
         {
             try{
 
                 msgRecv = dis.readUTF();
                 System.out.println("Message from client:" + msgRecv);
+                String name = returnName(msgRecv);
+                msgRecv = returnActualMessage(msgRecv);
+                int iterateIDs = 0;
 
                 if(msgRecv.equals("logout"))
                 {
@@ -48,11 +50,13 @@ public class HandleClient implements Runnable
                 //if not working try calling the functions once and put the connections in  a local list
                 for(HandleClient client : Server.getConnections())
                 {
-                    if(client.hasConnected == true) //to add condition to check if the name of the client corresponds with the one desired
+
+                    if(client.hasConnected == true && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
                     {
-                        System.out.println(this.clientName + ": " + msgRecv);
-                        client.dos.writeUTF(this.clientName + ": " + msgRecv);
+                        System.out.println(name + ": " + msgRecv);
+                        client.dos.writeUTF(name + " " + msgRecv);
                     }
+                    iterateIDs++;
                 }
 
             }
@@ -70,5 +74,24 @@ public class HandleClient implements Runnable
         {
             e.printStackTrace();
         }
+    }
+
+    private String returnName(String msg)
+    {
+        String[] tokens = msg.split(":");
+
+        return tokens[0];
+    }
+
+    private String returnActualMessage(String msg)
+    {
+        String[] tokens = msg.split(":");
+
+        String message = "";
+
+        for(int i = 1; i < tokens.length; i++)
+            message += ":" + tokens[i];
+
+        return message;
     }
 }
