@@ -26,7 +26,14 @@ public class GiveNamePort extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                client.connectButtonPressed(client);
+                try
+                {
+                    client.connectButtonPressed(client);
+                }
+                catch(Exception ex)
+                {
+                    System.out.println("Error occured when pressing Connect");
+                }
             }
         });
     }

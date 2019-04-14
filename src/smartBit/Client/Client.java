@@ -1,7 +1,5 @@
 package smartBit.Client;
 
-import smartBit.Client.ClientGUI;
-
 import javax.swing.*;
 import java.net.*;
 import java.io.*;
@@ -14,7 +12,7 @@ public class Client implements IClient
     private Socket socket            = null;
     private DataInputStream input = null;
     private DataOutputStream out     = null;
-    private ClientGUI clientGUI;
+    private GUIClient clientGUI;
     private static GiveNamePort inputGUI;
     private String text = "";
     private String clientName;
@@ -154,14 +152,15 @@ public class Client implements IClient
 
     private void createGUI(IClient client) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException
     {
-        //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
 
-                clientGUI = new ClientGUI(client);
+                clientGUI = new GUIClient(client);
                 clientGUI.setVisible(true);
+
             }
         });
     }
