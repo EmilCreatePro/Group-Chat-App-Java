@@ -119,7 +119,13 @@ public class Client implements IClient
                         String msg = input.readUTF();
                         clientGUI.appendDialogueText(msg);
                         System.out.println("Message received: " + msg);
-                    } catch (IOException e) {
+                    }
+                    catch (EOFException e) {
+                        System.out.println("Server is down!");
+                        return;
+                        //e.printStackTrace();
+                    }
+                    catch (IOException e) {
 
                         e.printStackTrace();
                     }

@@ -23,18 +23,15 @@ public class HandleClient implements Runnable
         dos = out;
         hasConnected = true;
     }
-
-
-
+    
     @Override
     public void run()
     {
-        String msgRecv;
+        String msgRecv = "";
         while(runClient)
         {
             try{
-
-                msgRecv = dis.readUTF();
+                 msgRecv = dis.readUTF();
                 System.out.println("Message from client:" + msgRecv);
                 String name = returnName(msgRecv);
                 msgRecv = returnActualMessage(msgRecv);
@@ -60,20 +57,38 @@ public class HandleClient implements Runnable
                 }
 
             }
+            catch (EOFException e)
+            {
+                System.out.println("Client " + clientID + " has disconnected!");
+                runClient = false;
+                try
+                {
+                    this.dis.close();
+                    this.dos.close();
+                    this.socket.close();
+                }catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
+
+                //e.printStackTrace();
+            }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
         }
 
-        try
-        {
+        try {
             this.dis.close();
             this.dos.close();
-        }catch (IOException e)
-        {
+            this.socket.close();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     private String returnName(String msg)
@@ -83,7 +98,7 @@ public class HandleClient implements Runnable
         return tokens[0];
     }
 
-    private String returnActualMessage(String msg)
+    private String returnActualMessage(String msg)//if there are other ':' characters, put them back in!
     {
         String[] tokens = msg.split(":");
 
