@@ -14,6 +14,7 @@ public class HandleClient implements Runnable
     private Socket socket;
     private boolean hasConnected;
     private boolean runClient = true;
+    private boolean chatNotifiedOfConnection = false;
 
     public HandleClient(Socket socket, Integer clientID, DataInputStream in, DataOutputStream out)
     {
@@ -23,7 +24,7 @@ public class HandleClient implements Runnable
         dos = out;
         hasConnected = true;
     }
-    
+
     @Override
     public void run()
     {
@@ -50,11 +51,21 @@ public class HandleClient implements Runnable
 
                     if(client.hasConnected == true && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
                     {
+                        if(chatNotifiedOfConnection == false)
+                        {
+                            msgRecv = " has joined the conversation!";
+                        }
                         System.out.println(name + ": " + msgRecv);
                         client.dos.writeUTF(name + " " + msgRecv);
                     }
                     iterateIDs++;
                 }
+
+                /*
+                 * This is to ensure that the first message of a new client won't be replaced with 'join the conversation!'
+                 * This Variable will be false only in the beginning
+                 */
+                chatNotifiedOfConnection = true;
 
             }
             catch (EOFException e)
@@ -109,4 +120,5 @@ public class HandleClient implements Runnable
 
         return message;
     }
+
 }

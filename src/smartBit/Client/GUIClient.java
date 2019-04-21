@@ -12,10 +12,18 @@ public class GUIClient extends JFrame {
 
     private JTextArea clientInput;
     private JTextArea dialogueBox;
-    private JScrollPane scroll;
+    private JScrollPane dialogueBoxScroll, clientInputScroll;
     private JButton sendButton;
     private JPanel panel;
     private IClient client;
+    private final int xPositionTextArea = 20;
+    private final int yPositionDialogBox = 20;
+    private final int yPositionClientInput = 450;
+    private final int widthDialogueBox = 500;
+    private final int heightDialogueBox = 400;
+    private final int widthClientInput = 400;
+    private final int heightClientInput = 40;
+
 
     public GUIClient(IClient client) {
 
@@ -27,21 +35,14 @@ public class GUIClient extends JFrame {
         getContentPane().setBackground(Color.WHITE);
         setLayout(null);
 
-        scroll = new JScrollPane();
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        dialogueBox = new JTextArea();
-        dialogueBox.setBounds(20, 20, 500, 400);
-        dialogueBox.setBorder(new LineBorder(Color.BLACK));
-        dialogueBox.setEditable(false);
+        dialogueBox = createJTextArea(xPositionTextArea, yPositionDialogBox, widthDialogueBox, heightDialogueBox);
+        dialogueBoxScroll = createJScrollPane(xPositionTextArea, yPositionDialogBox, widthDialogueBox, heightDialogueBox, dialogueBox);
 
-        clientInput = new JTextArea();
-        clientInput.setBounds(20, 450, 400, 40);
-        clientInput.setBorder(new LineBorder(Color.BLACK));
+        clientInput = createJTextArea(xPositionTextArea, yPositionClientInput, widthClientInput, heightClientInput);
+        clientInput.setEditable(true);
+        clientInputScroll = createJScrollPane(xPositionTextArea, yPositionClientInput, widthClientInput, heightClientInput, clientInput);
 
-        scroll.setBounds(20, 20, 500, 400);
-        scroll.getViewport().setBackground(Color.WHITE);
-        scroll.getViewport().add(dialogueBox);
 
         // Create JButton and JPanel
         sendButton = new JButton("Send");
@@ -55,9 +56,8 @@ public class GUIClient extends JFrame {
         this.getContentPane().add(panel);
 
         //add(panel);
-
-        add(clientInput);
-        add(scroll);
+        add(clientInputScroll);
+        add(dialogueBoxScroll);
 
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -94,7 +94,7 @@ public class GUIClient extends JFrame {
 
     private void sendMessageRequest()
     {
-        if(!clientInput.equals(""))
+        if(!clientInput.getText().equals(""))
         {
             client.receiveText(getClientText());
             clientInput.setCaretPosition(0);
@@ -102,7 +102,7 @@ public class GUIClient extends JFrame {
         }
     }
 
-    public String getClientText()
+    private String getClientText()
     {
         String text = clientInput.getText();
         displayMessages(text);
@@ -119,4 +119,27 @@ public class GUIClient extends JFrame {
         dialogueBox.setText(dialogueBox.getText() + msg + "\n");
     }
 
+    private JTextArea createJTextArea(int xPos, int yPos, int width, int height)
+    {
+        JTextArea jta = new JTextArea();
+        jta.setBounds(xPos, yPos, width, height);
+        jta.setBorder(new LineBorder(Color.BLACK));
+        jta.setEditable(false);
+        /* If text is longer than the width of text box -> it gives a new line */
+        jta.setLineWrap(true);
+
+        return jta;
+
+    }
+
+    private JScrollPane createJScrollPane(int xPos, int yPos, int width, int height, JTextArea textArea)
+    {
+        JScrollPane jsp = new JScrollPane();
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jsp.setBounds(xPos, yPos, width, height);
+        jsp.getViewport().setBackground(Color.WHITE);
+        jsp.getViewport().add(textArea);
+
+        return jsp;
+    }
 }

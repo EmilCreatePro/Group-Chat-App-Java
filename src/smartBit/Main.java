@@ -1,7 +1,5 @@
 package smartBit;
 
-import smartBit.Client.GiveNamePort;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -75,24 +73,29 @@ public class Main extends JFrame {
     public static void main(String[] args) {
 	// write your code here
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedLookAndFeelException e) {
+//            e.printStackTrace();
+//        }
+//
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                Main m = new Main();
+//            }
+//        });
+//        String ip = new String("123.123.123.123.2");
+//        String[] tokens = ip.split("\\.");
+//        System.out.println(ip + " has " + tokens.length);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Main m = new Main();
-            }
-        });
-
+        //new ConnectionWarning("<html>Error<br/>Sal</html>");
+        //new ConnectionDialog();
     }
 }

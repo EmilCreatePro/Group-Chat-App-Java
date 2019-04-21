@@ -35,14 +35,6 @@ public class Client implements IClient
 
         this.clientName = clientName;
 
-        try {
-            createGUI(this);
-
-        }catch (Exception e)
-        {
-            System.out.println("Could not create GUI for client!");
-        }
-
         // establish a connection
         try
         {
@@ -56,85 +48,102 @@ public class Client implements IClient
 
             // sends output to the socket
             out    = new DataOutputStream(socket.getOutputStream());
+
+            try {
+                createGUI(this);
+
+            }catch (Exception e)
+            {
+                System.out.println("Could not create GUI for client!");
+            }
+
+            try{
+                Thread.sleep(500);
+            }catch (InterruptedException ie){
+                System.out.println("Could not put it to sleep!");
+            }
+
+            // sendMessage thread
+            Thread sendMessage = new Thread(new Runnable()
+            {
+                @Override
+                public void run() {
+
+                    /*Alert the chat room who has connected! */
+                    try{
+                        out.writeUTF(initialGreetingMessage());
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    while (true) {
+                        // read the message to deliver.
+                        try {
+                            try{
+                                Thread.sleep(500);
+                            }catch (InterruptedException ie){
+                                System.out.println("Could not put it to sleep!");
+                            }
+                            // write on the output stream
+                            text = getText();
+                            if(!getText().equals(""))
+                            {
+                                System.out.println("I said:" + text);
+                                out.writeUTF(clientName +":"+ text);
+                                text = "";
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            // readMessage thread
+            Thread readMessage = new Thread(new Runnable()
+            {
+                @Override
+                public void run() {
+
+                    while (true) {
+                        try {
+                            try{
+                                Thread.sleep(500);
+                            }catch (InterruptedException ie){
+                                System.out.println("Could not put it to sleep!");
+                            }
+                            // read the message sent to this client
+                            String msg = input.readUTF();
+                            clientGUI.appendDialogueText(msg);
+                            System.out.println("Message received: " + msg);
+                        }
+                        catch (EOFException e) {
+                            System.out.println("Server is down!");
+                            return;
+                            //e.printStackTrace();
+                        }
+                        catch (IOException e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            sendMessage.start();
+            readMessage.start();
+
         }
         catch(UnknownHostException u)
         {
-            System.out.println(u);
+            System.out.println("The IP address of a host could not be determined!");
         }
         catch(IOException i)
         {
-            System.out.println(i);
+            System.out.println("Sorry, could not connect");
         }
 
-        try{
-            Thread.sleep(500);
-            //clientGUI.appendDialogueText("FMMM AM ZIS!!!");
-        }catch (InterruptedException ie){
-            System.out.println("Could not put it to sleep!");
-        }
 
-        // sendMessage thread
-        Thread sendMessage = new Thread(new Runnable()
-        {
-            @Override
-            public void run() {
-                while (true) {
-
-                    // read the message to deliver.
-                    try {
-                        try{
-                            Thread.sleep(500);
-                          }catch (InterruptedException ie){
-                                   System.out.println("Could not put it to sleep!");
-                                }
-                        // write on the output stream
-                        text = getText();
-                        if(!getText().equals(""))
-                        {
-                            System.out.println("I said:" + text);
-                            out.writeUTF(clientName +":"+ text);
-                            text = "";
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        // readMessage thread
-        Thread readMessage = new Thread(new Runnable()
-        {
-            @Override
-            public void run() {
-
-                while (true) {
-                    try {
-                        try{
-                            Thread.sleep(500);
-                        }catch (InterruptedException ie){
-                            System.out.println("Could not put it to sleep!");
-                        }
-                        // read the message sent to this client
-                        String msg = input.readUTF();
-                        clientGUI.appendDialogueText(msg);
-                        System.out.println("Message received: " + msg);
-                    }
-                    catch (EOFException e) {
-                        System.out.println("Server is down!");
-                        return;
-                        //e.printStackTrace();
-                    }
-                    catch (IOException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        sendMessage.start();
-        readMessage.start();
 
 //            }
 //            catch(IOException e)
@@ -234,5 +243,10 @@ public class Client implements IClient
             System.out.println(e);
         }
 
+    }
+
+    private String initialGreetingMessage()
+    {
+        return "\t" + this.clientName + ": I connected!";
     }
 }
