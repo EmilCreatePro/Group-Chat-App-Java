@@ -1,5 +1,7 @@
 package smartBit.Client;
 
+import smartBit.Server.Server;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,6 +103,19 @@ public class GiveNamePort extends JFrame
 
             try{
             Socket connectionTest = new Socket(ip,portInt);
+
+                try
+                {
+                    //clone initial connection
+                    connectionTest.close();
+                    //Server.nrClients--;
+
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
+
             }
             catch(UnknownHostException u)
             {

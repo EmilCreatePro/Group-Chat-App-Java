@@ -217,6 +217,8 @@ public class Client implements IClient
     {
         getInputInfo();
         inputGUI.setVisible(false);
+        inputGUI = null;
+
         try {
             client = new Client(clientName, ip, port);
         }catch (Exception e)

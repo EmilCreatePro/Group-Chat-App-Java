@@ -36,7 +36,8 @@ public class HandleClient implements Runnable
                 System.out.println("Message from client:" + msgRecv);
                 String name = returnName(msgRecv);
                 msgRecv = returnActualMessage(msgRecv);
-                int iterateIDs = 0;
+
+
 
                 if(msgRecv.equals("logout"))
                 {
@@ -45,20 +46,42 @@ public class HandleClient implements Runnable
                     break;
                 }
 
-                //if not working try calling the functions once and put the connections in  a local list
-                for(HandleClient client : Server.getConnections())
-                {
+                ArrayList<HandleClient> allClients = Server.getConnections();
+                Integer lastConnectionID = (allClients.get(allClients.size() - 1)).clientID;
+                System.out.println("Client ID:" + lastConnectionID);
 
-                    if(client.hasConnected == true && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
+                /*Start from 1 because the proper connection starts from ID 1*/
+                int iterateIDs = 1;
+
+//                for(HandleClient client : allClients)
+//                {
+//
+//                    if(client.hasConnected == true && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
+//                    {
+//                        if(chatNotifiedOfConnection == false)
+//                        {
+//                            msgRecv = " has joined the conversation!";
+//                        }
+//                        System.out.println(name + ": " + msgRecv);
+//                        client.dos.writeUTF(name + " " + msgRecv);
+//                    }
+//                    iterateIDs+=2;
+//                }
+                int count = 0;
+
+                while(iterateIDs <= lastConnectionID)
+                {
+                    if(((allClients.get(count).hasConnected) == true) && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
                     {
                         if(chatNotifiedOfConnection == false)
                         {
                             msgRecv = " has joined the conversation!";
                         }
                         System.out.println(name + ": " + msgRecv);
-                        client.dos.writeUTF(name + " " + msgRecv);
+                        allClients.get(count).dos.writeUTF(name + " " + msgRecv);
                     }
-                    iterateIDs++;
+                    iterateIDs+=2;
+                    count++;
                 }
 
                 /*
@@ -70,23 +93,14 @@ public class HandleClient implements Runnable
             }
             catch (EOFException e)
             {
-                System.out.println("Client " + clientID + " has disconnected!");
-                runClient = false;
-                try
-                {
-                    this.dis.close();
-                    this.dos.close();
-                    this.socket.close();
-                }catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                }
+                closeConnection("EOF problem");
 
                 //e.printStackTrace();
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                //e.printStackTrace();
+                closeConnection("IOProblem");
             }
         }
 
@@ -121,4 +135,45 @@ public class HandleClient implements Runnable
         return message;
     }
 
+    private void closeConnection(String msg)
+    {
+        System.out.println("Client " + (clientID+1) + " has disconnected! " + msg);
+        runClient = false;
+        try
+        {
+            this.dis.close();
+            this.dos.close();
+            this.socket.close();
+            //Server.nrClients--;
+            Server.removeDisconnectedClient(this);
+            hasConnected = false;
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    /*
+        Overwrite this method because ArrayList.remove uses equals method to
+        determine whether the object should be remove. We need to test this
+        accordingly.
+     */
+    public boolean equals(Object obj)
+    {
+        if(obj != null)
+        {
+            if(obj instanceof HandleClient)
+            {
+                HandleClient castObj = (HandleClient)obj;
+                return this.hashCode() == castObj.hashCode();
+            }
+        }
+        return false;
+    }
+
+//    public Integer getClientID()
+//    {
+//        return this.clientID;
+//    }
 }

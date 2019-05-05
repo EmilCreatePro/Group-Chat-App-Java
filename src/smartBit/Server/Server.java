@@ -28,9 +28,13 @@ public class Server
 
         while(serverOn)
         {
-            System.out.println("Waiting for a incoming client " + (nrClients + 1));
+            System.out.println("Waiting for a incoming client " + nrClients);
 
             socket = server.accept();//wait and accept an incoming request
+
+            System.out.println("Client " + nrClients + " has connected!");
+
+
 
             inSocket = new DataInputStream(socket.getInputStream());
             outSocket = new DataOutputStream(socket.getOutputStream());
@@ -54,5 +58,12 @@ public class Server
         return connections;
     }
 
+    public static boolean removeDisconnectedClient(HandleClient clientToRemove)
+    {
+
+        connections.remove(clientToRemove);
+        //nrClients--;
+        return true;
+    }
 
 }
