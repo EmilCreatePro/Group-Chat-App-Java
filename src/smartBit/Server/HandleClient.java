@@ -16,6 +16,12 @@ public class HandleClient implements Runnable
     private boolean runClient = true;
     private boolean chatNotifiedOfConnection = false;
 
+    public HandleClient() {
+        //for testing
+        dis = null;
+        dos = null;
+    }
+
     public HandleClient(Socket socket, Integer clientID, DataInputStream in, DataOutputStream out)
     {
         this.socket = socket;
