@@ -22,6 +22,10 @@ public class GiveNamePort extends JFrame
     private IClient client;
     private String inputErrorMessage = "";
 
+    public GiveNamePort()
+    {
+        //only for testing
+    }
     public GiveNamePort(IClient client)
     {
         this.client = client;
