@@ -21,6 +21,7 @@ public class Server
 
     public static void main(String[] args) throws IOException, InterruptedException
     {
+        /* Realises requirement Req_1_ChatApp */
         ServerSocket server = new ServerSocket(port);//socket that listens to port 1234
         //it represents the passive side -> aka the server
 
@@ -32,6 +33,7 @@ public class Server
 
             socket = server.accept();//wait and accept an incoming request
 
+            /* Realises requirement Req_2_ChatApp */
             System.out.println("Client " + nrClients + " has connected!");
 
 
@@ -42,12 +44,14 @@ public class Server
 
             HandleClient newClient = new HandleClient(socket, nrClients, inSocket, outSocket);
 
+            /* Realises requirement Req_3_ChatApp  */
             Thread handleClientThread = new Thread(newClient);//create a new thread for this client
 
             connections.add(newClient);
 
             handleClientThread.start();
 
+            /* Realises requirement Req_2_ChatApp */
             nrClients++;
         }
 

@@ -75,6 +75,8 @@ public class HandleClient implements Runnable
 //                }
                 int count = 0;
 
+                /* Realises requirement Req_4_ChatApp */
+                /* Realises requirement Req_5_ChatApp */
                 while(iterateIDs <= lastConnectionID)
                 {
                     if(((allClients.get(count).hasConnected) == true) && (iterateIDs != clientID)) //to add condition to check if the name of the client corresponds with the one desired
@@ -83,6 +85,7 @@ public class HandleClient implements Runnable
                         {
                             msgRecv = " has joined the conversation!";
                         }
+                        /* Realises requirement Req_9_ChatApp */
                         System.out.println(name + ": " + msgRecv);
                         allClients.get(count).dos.writeUTF(name + " " + msgRecv);
                     }
@@ -99,12 +102,14 @@ public class HandleClient implements Runnable
             }
             catch (EOFException e)
             {
+                /* Realises requirement Req_6_ChatApp */
                 closeConnection("EOF problem");
 
                 //e.printStackTrace();
             }
             catch (IOException e)
             {
+                /* Realises requirement Req_6_ChatApp */
                 //e.printStackTrace();
                 closeConnection("IOProblem");
             }
@@ -141,6 +146,7 @@ public class HandleClient implements Runnable
         return message;
     }
 
+    /* Realises requirement Req_6_ChatApp */
     private void closeConnection(String msg)
     {
         System.out.println("Client " + (clientID+1) + " has disconnected! " + msg);

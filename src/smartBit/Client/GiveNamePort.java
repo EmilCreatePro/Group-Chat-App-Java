@@ -52,6 +52,7 @@ public class GiveNamePort extends JFrame
                     }
                     else
                     {
+                        /* Realises requirement Req_8_ChatApp */
                         notifyError();
                     }
                 }
@@ -140,6 +141,7 @@ public class GiveNamePort extends JFrame
         return  retVal;
     }
 
+    /* Realises requirement Req_8_ChatApp */
     private boolean hasInputCorrectForm()
     {
         String ip = ipTextArea.getText();
@@ -181,6 +183,7 @@ public class GiveNamePort extends JFrame
         return retVal;
     }
 
+    /* Realises requirement Req_8_ChatApp */
     private boolean validateIP(String ip)
     {
         String[] tokens = ip.split("\\.");
@@ -212,6 +215,7 @@ public class GiveNamePort extends JFrame
         return true;
     }
 
+    /* Realises requirement Req_8_ChatApp */
     private void notifyError()
     {
         try {

@@ -76,6 +76,8 @@ public class Client implements IClient
                         e.printStackTrace();
                     }
 
+                    /* Realises requirement Req_5_ChatApp */
+                    /* Realises requirement Req_9_ChatApp */
                     while (true) {
                         // read the message to deliver.
                         try {
@@ -134,10 +136,12 @@ public class Client implements IClient
             readMessage.start();
 
         }
+        /* Realises requirement Req_7_ChatApp */
         catch(UnknownHostException u)
         {
             System.out.println("The IP address of a host could not be determined!");
         }
+        /* Realises requirement Req_7_ChatApp */
         catch(IOException i)
         {
             System.out.println("Sorry, could not connect");

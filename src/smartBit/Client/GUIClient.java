@@ -37,10 +37,14 @@ public class GUIClient extends JFrame {
 
 
         dialogueBox = createJTextArea(xPositionTextArea, yPositionDialogBox, widthDialogueBox, heightDialogueBox);
+
+        /* Realises requirement Req_11_ChatApp */
         dialogueBoxScroll = createJScrollPane(xPositionTextArea, yPositionDialogBox, widthDialogueBox, heightDialogueBox, dialogueBox);
 
         clientInput = createJTextArea(xPositionTextArea, yPositionClientInput, widthClientInput, heightClientInput);
         clientInput.setEditable(true);
+
+        /* Realises requirement Req_11_ChatApp */
         clientInputScroll = createJScrollPane(xPositionTextArea, yPositionClientInput, widthClientInput, heightClientInput, clientInput);
 
 
@@ -56,6 +60,7 @@ public class GUIClient extends JFrame {
         this.getContentPane().add(panel);
 
         //add(panel);
+        /* Realises requirement Req_11_ChatApp */
         add(clientInputScroll);
         add(dialogueBoxScroll);
 
@@ -68,7 +73,7 @@ public class GUIClient extends JFrame {
         });
 
 
-
+        /* Realises requirement Req_12_ChatApp */
         KeyAdapter isEnterPressed = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -109,6 +114,7 @@ public class GUIClient extends JFrame {
         return text;
     }
 
+    /* Realises requirement Req_10_ChatApp */
     private void displayMessages(String msg)
     {
         dialogueBox.setText(dialogueBox.getText() + "Me: " + msg + "\n");
